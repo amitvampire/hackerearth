@@ -1,0 +1,83 @@
+#include<bits/stdc++.h>
+using namespace std;
+vector<int> v[11];
+vector<int> ans;
+vector<vector<int> > br;
+bool check[11];
+int par[11],vis[11],low[11];
+void dfs(int vertex,int t)
+{
+    int child=0;
+    low[vertex]=t+1;
+    vis[vertex]=t+1;
+    for(int i=0;i<v[vertex].size();i++)
+    {
+        if(check[v[vertex][i]] && par[vertex]!=v[vertex][i])
+          low[vertex]=min(low[vertex],vis[v[vertex][i]]);
+        else if(check[v[vertex][i]]==false)
+        {
+            check[v[vertex][i]]=true;
+            par[v[vertex][i]]=vertex;
+            child+=1;
+            dfs(v[vertex][i],t+1);
+            low[vertex]=min(low[vertex],low[v[vertex][i]]);
+            if(par[vertex]==-1 && child>1)
+            ans.push_back(vertex);
+            else if(par[vertex]!=-1 && low[v[vertex][i]]>=vis[vertex])
+            ans.push_back(vertex);
+            if(low[v[vertex][i]]>vis[vertex])
+            {
+                vector<int> temp;
+                temp.push_back(vertex);
+                temp.push_back(v[vertex][i]);
+                sort(temp.begin(),temp.end());
+                br.push_back(temp);
+            }
+        }
+        
+        
+        
+    }
+}   
+int main()
+{
+    int n ,m;
+    cin>>n>>m;
+    int a,b;
+    for(int i=0;i<m;i++)
+    {
+        cin>>a>>b;
+        v[a].push_back(b);
+        v[b].push_back(a);
+        
+    }
+    
+    for(int i=0;i<n;i++)
+    {
+        check[i]=false;
+        par[i]=-1;
+        vis[i]=0;
+        low[i]=0;
+        
+    }
+    check[0]=true;
+    dfs(0,0);
+    sort(br.begin(),br.end());
+    cout<<ans.size()<<"\n";
+    sort(ans.begin(),ans.end());
+    for(int i=0;i<ans.size();i++)
+    {
+        cout<<ans[i]<<" ";
+    }
+    cout<<"\n";
+    cout<<br.size()<<"\n";
+    for(int i=0;i<br.size();i++)
+    {
+        for(int j=0;j<br[i].size();j++)
+        {
+            cout<<br[i][j]<<" ";
+        }
+        cout<<"\n";
+    }
+  }
+
